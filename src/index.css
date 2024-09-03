@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 .container-bg {
   @apply bg-secondary-200;
   @apply drop-shadow;
@@ -10,8 +9,8 @@
   min-width: 90%;
 }
 
-.container{
-  @apply flex
+.container {
+  @apply flex;
 }
 
 .bodycontainer {

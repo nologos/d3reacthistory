@@ -1,6 +1,5 @@
-import React from "react"
-import ExampleComponent from "./components/ExampleComponent.tsx"
-
+import React from 'react'
+import ExampleComponent from './components/ExampleComponent.tsx'
 
 function App() {
   return (
