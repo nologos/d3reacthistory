@@ -1,28 +1,25 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
+// @ts-check
+/* eslint perfectionist/sort-objects: "error" */
+import antfu from '@antfu/eslint-config'
 
-export default tseslint.config(
-  { ignores: ['dist'] },
+export default antfu(
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-    },
-    plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
-    },
+    formatters: true,
+  },
+  {
     rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      'no-labels': 'off',
+      'no-lone-blocks': 'off',
+      'no-restricted-syntax': 'off',
+      'node/prefer-global/buffer': 'off',
+      'node/prefer-global/process': 'off',
+      'prefer-rest-params': 'off',
+      'symbol-description': 'off',
+      'ts/ban-types': 'off',
+      'ts/no-invalid-this': 'off',
+      'ts/no-unnecessary-type-constraint': 'off',
+      'vue/no-template-shadow': 'off',
+      'vue/no-v-text-v-html-on-component': 'off',
     },
   },
 )
