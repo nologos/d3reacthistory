@@ -51,8 +51,8 @@ function getshade(baseColor, shadeNumber) {
 // var primary = '#6a87fc';
 // var secondary = '#6ae670';
 
-const primary = '#fff7fc'
-const secondary = '#ffe670'
+const primary = '#1f111c'
+const secondary = '#1f16ff'
 
 const colors = {
   secondary: {

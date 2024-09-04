@@ -11,6 +11,7 @@
 
 .container {
   @apply flex;
+  flex-direction: column;
 }
 
 .bodycontainer {
