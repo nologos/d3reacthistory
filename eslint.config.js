@@ -8,6 +8,7 @@ export default antfu(
   },
   {
     rules: {
+      'no-console': 'off',
       'no-labels': 'off',
       'no-lone-blocks': 'off',
       'no-restricted-syntax': 'off',
