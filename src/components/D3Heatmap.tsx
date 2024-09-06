@@ -5,7 +5,22 @@ const LoadComponent: React.FC<any> = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
-  function bar(hookcomponent = '.heatmap', csvpath = '/src/components/dji.csv') {
+  function renderTooltip(csvdata, date) {
+    try {
+      const objectByDate = csvdata.find(item => item.Date === date)
+      return objectByDate.Data
+    }
+    catch (e) {
+      return undefined
+    }
+  }
+
+  function bar(
+    hookcomponent = '.heatmap',
+    csvpath = '/src/components/dji.csv',
+    startyear = 2019,
+    endyear = 2025,
+  ) {
     // Set dimensions and size for the calendar heatmap
     const width = 960
     const height = 136
@@ -21,7 +36,7 @@ const LoadComponent: React.FC<any> = () => {
       .range(d3.range(11).map(d => `q${d}-11`))
 
     // Load the CSV data and process it
-    const data = d3.csv(csvpath).then((poooop: any) => {
+    d3.csv(csvpath).then((poooop: any) => {
       const data = d3.rollup(
         poooop,
         v => (v[0].Close - v[0].Open) / v[0].Open,
@@ -30,7 +45,7 @@ const LoadComponent: React.FC<any> = () => {
 
       // Create an SVG element for each year in the range and append to the selected component
       const svg = d3.select(hookcomponent).selectAll('svg')
-        .data(d3.range(2009, 2010))
+        .data(d3.range(startyear, endyear))
         .enter().append('svg')
         .attr('width', width)
         .attr('height', height)
@@ -90,7 +105,8 @@ const LoadComponent: React.FC<any> = () => {
       rect.on('mouseover', (event: any, d) => {
         if (!d)
           return
-        const dataPoint = `${d}: ${percent(data.get(d))}`
+        // const dataPoint = `${d}: ${percent(data.get(d))}`
+        const dataPoint = `${d}: ${renderTooltip(poooop, d)}`
         tooltip.html(dataPoint)
           .style('left', `${event.pageX + 10}px`)
           .style('top', `${event.pageY - 20}px`)
@@ -116,7 +132,6 @@ const LoadComponent: React.FC<any> = () => {
         .attr('class', d => `day ${color(data.get(d))}`)
         .select('title')
         .text(d => `${d}: ${percent(data.get(d))}`)
-      return data
     }).catch((error: any) => {
       console.error('Error loading the CSV file:', error)
     })
