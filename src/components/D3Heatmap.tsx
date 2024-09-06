@@ -39,6 +39,16 @@ const LoadComponent: React.FC<any> = () => {
       .style('text-anchor', 'middle')
       .text((d) => { return d }) // Display the year
 
+    // Add month labels at the top of each column
+    svg.selectAll('.month')
+      .data(d => d3.timeMonths(new Date(d, 0, 1), new Date(d + 1, 0, 1)))
+      .enter().append('text')
+      .attr('class', 'month-label')
+      .attr('x', d => (d3.timeWeek.count(d3.timeYear(d), d) * cellSize + cellSize / 2) + 40)
+      .attr('y', -5) // Position above the calendar
+      .style('text-anchor', 'middle')
+      .text(d => d3.timeFormat('%b')(d)) // Display the abbreviated month name
+
     // Create a rectangle for each day of the year
     const rect = svg.selectAll('.day')
       .data((d) => { return d3.timeDays(new Date(d, 0, 1), new Date(d + 1, 0, 1)) }) // Create an array of all days in the year
