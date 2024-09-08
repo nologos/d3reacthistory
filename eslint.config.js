@@ -19,6 +19,7 @@ export default antfu(
       'ts/ban-types': 'off',
       'ts/no-invalid-this': 'off',
       'ts/no-unnecessary-type-constraint': 'off',
+      'unused-imports/no-unused-vars': 'off',
       'vue/no-template-shadow': 'off',
       'vue/no-v-text-v-html-on-component': 'off',
     },
