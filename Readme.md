@@ -13,3 +13,7 @@ npm i -D simple-git-hooks lint-staged
 git config core.hooksPath .git/hooks/
 rm -rf .git/hooks
 npx simple-git-hooks
+
+# nice reference example for heatmaps
+
+https://github.com/g1eb/reactjs-calendar-heatmap/tree/main?tab=readme-ov-file
