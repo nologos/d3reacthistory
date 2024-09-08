@@ -101,6 +101,10 @@ button:focus-visible {
   fill: #fff;
   stroke: #ccc;
 }
+.day-colored {
+  stroke: #ccc;
+  stroke-width: 1;
+}
 
 .month {
   fill: none;

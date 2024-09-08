@@ -1,11 +1,25 @@
 import { useEffect, useState } from 'react'
 import * as d3 from 'd3'
 
+interface LoadComponentProps {
+  hookComponent?: string
+  csvPath?: string
+  startYear?: number
+  endYear?: number
+}
+
+const defaultProps: LoadComponentProps = {
+  hookComponent: '.heatmap',
+  csvPath: '/src/components/dji.csv',
+  startYear: 2019,
+  endYear: 2025,
+}
+
 const LoadComponent: React.FC<any> = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
-  function renderTooltip(csvdata, date) {
+  function renderTooltip(csvdata: any, date: any) {
     try {
       const objectByDate = csvdata.find(item => item.Date === date)
       return objectByDate.Data
@@ -16,10 +30,10 @@ const LoadComponent: React.FC<any> = () => {
   }
 
   function bar(
-    hookcomponent = '.heatmap',
-    csvpath = '/src/components/dji.csv',
-    startyear = 2019,
-    endyear = 2025,
+    hookComponent = defaultProps.hookComponent,
+    csvPath = defaultProps.csvPath,
+    startYear = defaultProps.startYear,
+    endYear = defaultProps.endYear,
   ) {
     // Set dimensions and size for the calendar heatmap
     const width = 960
@@ -30,22 +44,17 @@ const LoadComponent: React.FC<any> = () => {
     const percent = d3.format('.1%')
     const format = d3.timeFormat('%Y-%m-%d')
 
-    // Set color scale mapping domain values to a range of classes (quantized)
-    const color = d3.scaleQuantize()
-      .domain([-0.05, 0.05])
-      .range(d3.range(11).map(d => `q${d}-11`))
-
     // Load the CSV data and process it
-    d3.csv(csvpath).then((poooop: any) => {
+    d3.csv(csvPath).then((poooop: any) => {
       const data = d3.rollup(
         poooop,
-        v => (v[0].Close - v[0].Open) / v[0].Open,
+        v => (v[0].color || 'green'),
         d => d.Date,
       )
 
       // Create an SVG element for each year in the range and append to the selected component
-      const svg = d3.select(hookcomponent).selectAll('svg')
-        .data(d3.range(startyear, endyear))
+      const svg = d3.select(hookComponent).selectAll('svg')
+        .data(d3.range(startYear, endYear))
         .enter().append('svg')
         .attr('width', width)
         .attr('height', height)
@@ -60,9 +69,9 @@ const LoadComponent: React.FC<any> = () => {
         .text((d) => { return d }) // Display the year
 
       // Initialize Tooltip
-      const tooltip = d3.select(hookcomponent)
+      const tooltip = d3.select(hookComponent)
         .append('div')
-        .attr('class', 'day2')
+        .attr('class', 'tooltip')
         .style('opacity', 0)
         .style('pointer-events', 'none')
         .style('position', 'absolute')
@@ -73,8 +82,8 @@ const LoadComponent: React.FC<any> = () => {
         .style('padding', '15px')
         .style('font-size', '12px')
         .style('line-height', '14px')
-        .style('color', 'rgb(51, 51, 51)')
-        .style('background', 'rgba(255, 255, 255, 0.75)')
+        .style('color', 'rgb(00, 00, 00)')
+        .style('background', 'rgba(255, 255, 255, 0.95)')
 
       // Add month labels at the top of each column
       svg.selectAll('.month')
@@ -105,6 +114,9 @@ const LoadComponent: React.FC<any> = () => {
       rect.on('mouseover', (event: any, d) => {
         if (!d)
           return
+        d3.select(event.currentTarget)
+          .style('stroke', 'black')
+          .style('stroke-width', 3)
         // const dataPoint = `${d}: ${percent(data.get(d))}`
         const dataPoint = `${d}: ${renderTooltip(poooop, d)}`
         tooltip.html(dataPoint)
@@ -114,7 +126,11 @@ const LoadComponent: React.FC<any> = () => {
           .duration(200)
           .style('opacity', 1)
       })
-        .on('mouseout', () => {
+        .on('mouseout', (event) => {
+          d3.select(event.currentTarget)
+            .style('stroke', '#ccc')
+            .style('stroke-width', 1)
+
           tooltip.transition()
             .duration(500)
             .style('opacity', 0)
@@ -127,11 +143,29 @@ const LoadComponent: React.FC<any> = () => {
         .attr('class', 'month')
         .attr('d', monthPath) // Use a custom function to define the path of each month
 
-      // Apply the color scale to the rectangles based on the data
+      // // Set color scale mapping domain values to a range of classes (quantized)
+      // const color = d3.scaleQuantize()
+      // .domain([-0.05, 0.05])
+      // .range(d3.range(20).map(d => `q${d}-11`))
+
+      //   // Apply the color scale to the rectangles based on the data
+      //     rect.filter(d => data.has(d))
+      //       .attr('class', d => `day ${color(data.get(d))}`)
+      //       .select('title')
+      //       .text(d => `${d}: ${percent(data.get(d))}`)
+      //   }).catch((error: any) => {
+      //     console.error('Error loading the CSV file:', error)
+      //   })
+
+      // Apply the static color from the CSV data to the rectangles
+      // rect is a day object array
       rect.filter(d => data.has(d))
-        .attr('class', d => `day ${color(data.get(d))}`)
+        .attr('class', 'day-colored') // Keep the class 'day' as a base class for all rect elements
+        .attr('fill', (d) => {
+          const recuctionColor = data.get(d)
+          return recuctionColor
+        })
         .select('title')
-        .text(d => `${d}: ${percent(data.get(d))}`)
     }).catch((error: any) => {
       console.error('Error loading the CSV file:', error)
     })
