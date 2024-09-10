@@ -1,5 +1,5 @@
 // import React from "react"
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 function CSVGenerator() {
   const [getData, setData] = useState<Array<any>>([])
@@ -28,15 +28,30 @@ function CSVGenerator() {
     })()
   }, [])
 
+  function logfile() {
+    console.log(fileContent)
+  }
   const handleFileUpload = (event) => {
     const file = event.target.files[0]
+    console.log(file)
     if (file) {
+      console.log('opening file')
       const reader = new FileReader()
       reader.onload = (e) => {
+      //   console.log(e)
+      //   const content = e.target.result
+        console.log(e.target.result)
         setFileContent(e.target.result)
       }
-      // reader.readAsText(file) // or readAsDataURL(file) for images, readAsArrayBuffer(file) for binary
+      reader.readAsText(file) // or readAsDataURL(file) for images, readAsArrayBuffer(file) for binary
+      console.log({ asdf: fileContent })
     }
+  }
+
+  const inputFile = useRef<HTMLInputElement | null>(null)
+  const onButtonClick = () => {
+    // `current` points to the mounted file input element
+    inputFile.current.click()
   }
 
   if (loading) {
@@ -61,12 +76,17 @@ function CSVGenerator() {
         <div>
           <h2>Upload github repository files:</h2>
           <input type="file" onChange={handleFileUpload} />
+          <button onClick={logfile}>pooop</button>
           {fileContent && (
             <div>
               <h3>File Content:</h3>
               <pre>{fileContent}</pre>
             </div>
           )}
+        </div>
+        <div>
+          <input type="file" id="file" ref={inputFile} style={{ display: 'none' }} />
+          <button onClick={onButtonClick}>Open file upload window</button>
         </div>
       </h1>
     )
