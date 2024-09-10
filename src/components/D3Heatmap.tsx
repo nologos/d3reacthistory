@@ -1,21 +1,22 @@
 import { useEffect, useState } from 'react'
 import * as d3 from 'd3'
 
-interface LoadComponentProps {
-  hookComponent?: string
-  csvPath?: string
-  startYear?: number
-  endYear?: number
-}
+const LoadComponent: React.FC<any> = (props) => {
+  interface LoadComponentProps {
+    hookComponent?: string
+    csvPath?: string
+    startYear?: number
+    endYear?: number
+  }
 
-const defaultProps: LoadComponentProps = {
-  hookComponent: '.heatmap',
-  csvPath: '/src/components/dji.csv',
-  startYear: 2019,
-  endYear: 2025,
-}
+  const defaultProps: LoadComponentProps = {
+    hookComponent: '.heatmap',
+    csvPath: '/data/dji.csv',
+    startYear: 2019,
+    endYear: 2025,
+  }
+  console.log(defaultProps.csvPath)
 
-const LoadComponent: React.FC<any> = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -187,7 +188,7 @@ const LoadComponent: React.FC<any> = () => {
 
   useEffect(() => {
     if (!loading && !error) {
-      bar()
+      bar(props.csvPath)
     }
   }, [loading, error])
 
