@@ -14,7 +14,7 @@ function ExampleComponent() {
       <div className="flex">
         <ToggleButton handleToggle={handleToggle} buttonState={buttonState} />
         <button className="flex-1 bg-primary-900 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded">
-          Hello
+          React  Vite  Typescript
         </button>
       </div>
     </div>
